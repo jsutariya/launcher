@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="js_launcher" translate="label" sortOrder="1010" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>JS Launcher</label>
+            <tab>jsutariya</tab>
+            <resource>JS_Launcher::system_config</resource>
+            <group id="options" sortOrder="1" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Options</label>
+                <field id="shortcut_code_first" sortOrder="10" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Keyboard Shortcut First</label>
+                    <comment>The keycode of the first keyboard shortcut (defaults to "ctrl"/"17")</comment>
+                </field>
+                <field id="shortcut_code_second" sortOrder="15" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Keyboard Shortcut Second</label>
+                    <comment>The keycode of the first keyboard shortcut (defaults to "m"/"77")</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
