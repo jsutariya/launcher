@@ -168,35 +168,34 @@ require([
 
         function up()
         {
-            var elements = $('#pulsestorm_launcher_results').find("p");
+            var elements = $('#pulsestorm_launcher_results').children("p");
             var i = get_selected_highlight_index();
             if(i > 0)
             {
-                elements[i].removeClassName('highlight');
-                elements[i-1].addClassName('highlight');
+                $(elements[i]).removeClass('highlight');
+                $(elements[i-1]).addClass('highlight');
             }
+            scrollResults();
         }
 
         function down()
         {
-            console.log("down");
-            var elements = $('#pulsestorm_launcher_results').find("p");
-            console.log(elements);
+            var elements = $('#pulsestorm_launcher_results').children("p");
             var i = get_selected_highlight_index();
-            console.log(i);
             if(i+1 != elements.length)
             {
                 if(elements[i])
                 {
-                    elements[i].removeClassName('highlight');
+                    $(elements[i]).removeClass('highlight');
                 }
-                elements[i+1].addClassName('highlight');
+                $(elements[i+1]).addClass('highlight');
             }
+            scrollResults();
         }
 
         function go_to_highlighted_link()
         {
-            var a    = $('#pulsestorm_launcher_results p.highlight').find("a");
+            var a    = $('#pulsestorm_launcher_results p.highlight').children("a");
             if(!a || !a[0])
             {
                 return;
@@ -206,11 +205,11 @@ require([
 
         function get_selected_highlight_index()
         {
-            var elements = $('#pulsestorm_launcher_results').find("p");
+            var elements = $('#pulsestorm_launcher_results').children("p");
             var found = false;
             for(var i=0;i<elements.length;i++)
             {
-                if(elements[i].hasClassName('highlight'))
+                if($(elements[i]).hasClass('highlight'))
                 {
                     found = true;
                     break;
@@ -219,29 +218,38 @@ require([
 
             return found ? i : -1
         }
+
+        function scrollResults()
+        {
+            var $container = $("#pulsestorm_launcher_results");
+            var $scrollTo = $('.highlight');
+
+            $container.animate({scrollTop: $scrollTo.offset().top - $container.offset().top + $container.scrollTop(), scrollLeft: 0},100);
+        }
     });
 });
 </script>
 <style>
     #pulsestorm_launcher_input {
-        width: 100%;
+        width: 90%;
         line-height: 40px;
         font-size: 18px;
         text-indent: 10px;
+        position: fixed;
     }
     #pulsestorm_launcher_results p {
         font-size: 18px;
         padding: 3px 10px;
     }
     #pulsestorm_launcher_results {
-        padding-top: 5px;
+        padding-top: 50px;
     }
     #pulsestorm_launcher_results p.highlight {
         background-color: #c2e4efbf;
         line-height: 34px
     }
     #js_launcher {
-        width: 98%;
+        width: 96%;
         position: relative;
     }
 </style>
