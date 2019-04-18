@@ -43,6 +43,10 @@ class JsNav extends \Magento\Backend\Block\Template
      * @var Context
      */
     private $context;
+    /**
+     * @var \Magento\Config\Block\System\Config\Tabs
+     */
+    private $configTabs;
 
     /**
      * ActionLayoutRenderBefore constructor.
@@ -63,6 +67,7 @@ class JsNav extends \Magento\Backend\Block\Template
         Escaper $escaper,
         \Magento\Backend\Model\Menu\Filter\IteratorFactory $iteratorFactory,
         \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
+        \Magento\Config\Model\Config\Structure $configTabs,
         \Magento\Framework\App\Route\ConfigInterface $routeConfig = null, array $data = []
     ) {
         parent::__construct($context, $data);
@@ -76,6 +81,7 @@ class JsNav extends \Magento\Backend\Block\Template
         $this->escaper = $escaper;
         $this->iteratorFactory = $iteratorFactory;
         $this->jsonSerializer = $jsonSerializer;
+        $this->configTabs = $configTabs;
     }
 
     /**
@@ -87,7 +93,9 @@ class JsNav extends \Magento\Backend\Block\Template
     public function getJson()
     {
         $menuItems = $this->renderMenu($this->menuConfig->getMenu(), 0);
-        $menuItemsJson = $this->jsonSerializer->serialize($menuItems);
+        $configItems = $this->rendeConfig();
+        $allItems = array_merge($menuItems, $configItems);
+        $menuItemsJson = $this->jsonSerializer->serialize($allItems);
         return $menuItemsJson;
     }
 
@@ -123,6 +131,23 @@ class JsNav extends \Magento\Backend\Block\Template
                 $menuArray['children'] = $this->renderMenu($menuItem->getChildren(), $level + 1);
             }
             $parentArray[$menuItem->getTitle()] = $menuArray;
+        }
+        return $parentArray;
+    }
+
+    public function rendeConfig()
+    {
+        $parentArray = [];
+        foreach ($this->configTabs->getTabs() as $tab) {
+            $menuArray = [];
+            $sections = $tab->getChildren();
+            foreach($sections as $section)
+            {
+                $menuArray['label'] = 'System Configuration - ' . $section->getLabel();
+                $code = $section->getId();
+                $menuArray['url'] = $this->url->getUrl("adminhtml/system_config/edit/section/$code");
+                $parentArray[$section->getId()] = $menuArray;
+            }
         }
         return $parentArray;
     }

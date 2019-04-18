@@ -21,6 +21,10 @@ Install using composer:
 
 To launch navigation launcher in admin panel, press ctrl+m as default key combination. Key combination can be changed from admin panel configuration section.
 
-Press ctrl+m on any page in admin panel to initiate launcher. It will open a popup with Textbox, start typing where you want to go. It will give you all matching pages, navigate throgh them with up/down arrows. Press enter after selecting your desired page.
+You can navigate to any Menu option or configuration section from launcher with just one click.
+
+Refer <a href="https://jsutariya.wordpress.com/2019/04/17/magento-2-navigation-menu-launcher/" >JS Launcher Blog</a> for more details.
+
+Press CTRL+M on any page in admin panel to initiate launcher. It will open a popup with Textbox, start typing where you want to go. It will give you all matching pages, navigate through them with up/down arrows. Press enter after selecting your desired page.
 
 <img src="https://jsutariya.files.wordpress.com/2019/04/screenshot-from-2019-04-17-075059.png" title="Magento 2 JS Launcher" alt="Magento 2 JS Launcher" />
