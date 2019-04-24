@@ -1,0 +1,36 @@
+& when (@media-common = true) {
+  #search_box {
+    width: 90%;
+    line-height: 40px;
+    font-size: 18px;
+    text-indent: 10px;
+    position: fixed;
+  }
+  #search_results {
+    p {
+      font-size: 18px;
+      padding: 3px 10px;
+      border-top: 1px solid #dddddd;
+      line-height: 34px;
+      margin-bottom: 0px;
+    }
+    padding-top: 45px;
+    p.highlight {
+      background-color: #e0f6fe;
+    }
+  }
+  #js_launcher {
+    width: 96%;
+    position: relative;
+  }
+  .js-launcher {
+    .modal-title {
+      &:before {
+        content: url("JS_General::images/configuration.ico");
+        width: 20px;
+        display: block;
+        float: left;
+      }
+    }
+  }
+}

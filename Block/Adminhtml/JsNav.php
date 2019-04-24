@@ -170,6 +170,11 @@ class JsNav extends \Magento\Backend\Block\Template
 
         return $code;
     }
+
+    public function getSearchUrl()
+    {
+        return $this->url->getUrl("adminhtml/index/globalSearch");
+    }
 }
 
 
