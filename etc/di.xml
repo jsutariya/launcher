@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Backend\Controller\Adminhtml\Index\GlobalSearch">
+        <arguments>
+            <argument name="searchModules" xsi:type="array">
+                <item name="cms_pages" xsi:type="array">
+                    <item name="class" xsi:type="string">JS\Launcher\Model\Search\CmsPages</item>
+                    <item name="acl" xsi:type="string">Magento_Cms::page</item>
+                </item>
+                <item name="cms_blocks" xsi:type="array">
+                    <item name="class" xsi:type="string">JS\Launcher\Model\Search\CmsBlocks</item>
+                    <item name="acl" xsi:type="string">Magento_Cms::block</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+</config>

@@ -8,7 +8,7 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceContainer name="before.body.end">
-            <block class="JS\Launcher\Block\Adminhtml\JsNav" name="ps.nav" as="ps.nav" template="JS_Launcher::js-nav.phtml" />
+            <block class="JS\Launcher\Block\Adminhtml\JsNav" name="js.nav" as="js.nav" template="JS_Launcher::js-nav.phtml" />
         </referenceContainer>
     </body>
 </page>
