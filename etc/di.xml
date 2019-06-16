@@ -17,6 +17,10 @@
                     <item name="class" xsi:type="string">JS\Launcher\Model\Search\CmsBlocks</item>
                     <item name="acl" xsi:type="string">Magento_Cms::block</item>
                 </item>
+                <item name="category" xsi:type="array">
+                    <item name="class" xsi:type="string">JS\Launcher\Model\Search\Category</item>
+                    <item name="acl" xsi:type="string">Magento_Catalog::categories</item>
+                </item>
             </argument>
         </arguments>
     </type>

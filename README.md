@@ -4,7 +4,7 @@ JS Launcher
 ## About
 
 JS Launcher is a navigation launcher module for Magento inspired by <a href="https://github.com/astorm/PulsestormLauncher">PulseStorm Launcher</a> in Magento 1.
-The module allows you to navigate through admin panel Menu, Configuration sections and Global Search. You can navigate to any Menu link page, Configuration section, Products, Orders, Customers, CMS Pages and CMS Blocks using JS Launcher.
+The module allows you to navigate through admin panel Menu, Configuration sections and Global Search. You can navigate to any Menu link page, Configuration section, Products, Orders, Customers, Categories, CMS Pages and CMS Blocks using JS Launcher.
 
 ### Installation:
 Install using composer:
@@ -21,7 +21,7 @@ Install using composer:
 
 To launch navigation launcher in admin panel, press CTRL+M as default key combination. Key combination can be changed from admin panel configuration section.
 
-You can navigate to any Menu option or configuration section from launcher with just one click. You can search any order, customer or product using the launcher. With latest version, CMS pages and CMS block search functionality is also included. Now, Pages and Static blocks are also within reach using JS Launcher.
+You can navigate to any Menu option or configuration section from launcher with just one click. You can search any order, customer, cms pages, cms blocks or product using the launcher. With latest version, Category search functionality is also included. Now, Categories are also within reach using JS Launcher.
 
 Refer <a href="https://jsutariya.wordpress.com/2019/04/17/magento-2-navigation-menu-launcher/" >JS Launcher Blog</a> for more details.
 
