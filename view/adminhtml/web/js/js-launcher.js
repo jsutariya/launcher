@@ -52,7 +52,7 @@ define([
             var self = this;
             $(this.options.launcherPopup).modal(this.options.popupOptions).modal('openModal');
             setTimeout(function(){
-                $(self.options.searchbox).on('keyupz', function(e){
+                $(self.options.searchbox).on('keyup', function(e){
 
                     if (e.which == 40) {
                         self.down();
