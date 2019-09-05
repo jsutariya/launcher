@@ -93,7 +93,7 @@ class JsNav extends \Magento\Backend\Block\Template
     public function getJson()
     {
         $menuItems = $this->renderMenu($this->menuConfig->getMenu(), 0);
-        $configItems = $this->rendeConfig();
+        $configItems = $this->renderConfig();
         $allItems = array_merge($menuItems, $configItems);
         $menuItemsJson = $this->jsonSerializer->serialize($allItems);
         return $menuItemsJson;
@@ -135,7 +135,7 @@ class JsNav extends \Magento\Backend\Block\Template
         return $parentArray;
     }
 
-    public function rendeConfig()
+    public function renderConfig()
     {
         $parentArray = [];
         foreach ($this->configTabs->getTabs() as $tab) {

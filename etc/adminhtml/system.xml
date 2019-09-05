@@ -9,11 +9,12 @@
                 <label>Options</label>
                 <field id="shortcut_code_first" sortOrder="10" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Keyboard Shortcut First</label>
-                    <comment>The keycode of the first keyboard shortcut (defaults to "ctrl"/"17")</comment>
+                    <comment>The keycode of the first keyboard shortcut. Just press the key putting curson in textbox. (defaults to "ctrl"/"17")</comment>
+                    <frontend_model>JS\Launcher\Block\Adminhtml\Config\Field\KeyCode</frontend_model>
                 </field>
                 <field id="shortcut_code_second" sortOrder="15" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Keyboard Shortcut Second</label>
-                    <comment>The keycode of the first keyboard shortcut (defaults to "m"/"77")</comment>
+                    <comment>The keycode of the first keyboard shortcut. Just press the key putting curson in textbox. (defaults to "m"/"77")</comment>
                 </field>
             </group>
         </section>

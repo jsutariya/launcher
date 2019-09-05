@@ -11,6 +11,7 @@ define([
             searchResultsBox: "#search_results",
             menuJson: {},
             keyCodes: '17_77',
+            saveKeyCodes: '17_83',
             searchUrl: '',
             launcherPopup: "#js_launcher",
             menuLinks : {},
@@ -41,9 +42,11 @@ define([
                 }
                 keyQueueCombinations.push(e.which);
                 keyQueueCombinations.shift();
-                if(keyQueueCombinations.join('_') == self.options.keyCodes)
-                {
+                if(keyQueueCombinations.join('_') == self.options.keyCodes) {
                     self.openPopup();
+                } else if(keyQueueCombinations.join('_') == self.options.saveKeyCodes) {
+                    e.preventDefault();
+                    self.saveItem();
                 }
             });
 
@@ -105,6 +108,20 @@ define([
                 });
 
             }, 10);
+        },
+        saveItem: function() {
+            var self = this;
+            var $focused = $(':focus');
+            $focused.trigger("blur");
+            if($('button[data-ui-id="save-and-continue-button"]').length) {
+                $('button[data-ui-id="save-and-continue-button"]').trigger('click');
+            } else if($('button[data-ui-id="save-button"]').length) {
+                $('button[data-ui-id="save-button"]').trigger('click');
+            } else if($("button#save_and_edit_button").length) {
+                $("button#save_and_edit_button").trigger('click');
+            } else if($("button#save").length) {
+                $("button#save").trigger('click');
+            }
         },
         searchMenu: function(string)
         {
