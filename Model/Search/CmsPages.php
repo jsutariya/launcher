@@ -2,43 +2,48 @@
 
 namespace JS\Launcher\Model\Search;
 
-class CmsPages extends \Magento\Framework\DataObject
+use Magento\Backend\Helper\Data;
+use Magento\Cms\Api\PageRepositoryInterface;
+use Magento\Framework\Api\FilterBuilder;
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\DataObject;
+
+class CmsPages extends DataObject
 {
+    private const CMS_PAGE_EDIT_LINK = 'cms/page/edit';
     /**
-     * Adminhtml data
-     *
-     * @var \Magento\Backend\Helper\Data
+     * @var Data
      */
     protected $_adminhtmlData = null;
 
     /**
-     * @var \Magento\Cms\Api\PageRepositoryInterface
+     * @var PageRepositoryInterface
      */
     protected $pageRepository;
 
     /**
-     * @var \Magento\Framework\Api\SearchCriteriaBuilder
+     * @var SearchCriteriaBuilder
      */
     protected $searchCriteriaBuilder;
 
     /**
-     * @var \Magento\Framework\Api\FilterBuilder
+     * @var FilterBuilder
      */
     protected $filterBuilder;
 
     /**
      * Initialize dependencies.
      *
-     * @param \Magento\Backend\Helper\Data $adminhtmlData
-     * @param \Magento\Cms\Api\PageRepositoryInterface $pageRepository
-     * @param \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder
-     * @param \Magento\Framework\Api\FilterBuilder $filterBuilder
+     * @param Data $adminhtmlData
+     * @param PageRepositoryInterface $pageRepository
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param FilterBuilder $filterBuilder
      */
     public function __construct(
-        \Magento\Backend\Helper\Data $adminhtmlData,
-        \Magento\Cms\Api\PageRepositoryInterface $pageRepository,
-        \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
-        \Magento\Framework\Api\FilterBuilder $filterBuilder
+        Data $adminhtmlData,
+        PageRepositoryInterface $pageRepository,
+        SearchCriteriaBuilder $searchCriteriaBuilder,
+        FilterBuilder $filterBuilder
     ) {
         $this->_adminhtmlData = $adminhtmlData;
         $this->pageRepository = $pageRepository;
@@ -47,7 +52,7 @@ class CmsPages extends \Magento\Framework\DataObject
     }
 
     /**
-     * Load search results
+     * Get matching CMS pages.
      *
      * @return $this
      */
@@ -76,11 +81,11 @@ class CmsPages extends \Magento\Framework\DataObject
 
         foreach ($searchResults->getItems() as $page) {
             $result[] = [
-                'id' => 'customer/1/' . $page->getId(),
+                'id' => 'page/1/' . $page->getId(),
                 'type' => __('Page'),
                 'name' => $page->getTitle(),
                 'description' => $page->getTitle(),
-                'url' => $this->_adminhtmlData->getUrl('cms/page/edit', ['page_id' => $page->getId()]),
+                'url' => $this->_adminhtmlData->getUrl(self::CMS_PAGE_EDIT_LINK, ['page_id' => $page->getId()]),
             ];
         }
         $this->setResults($result);

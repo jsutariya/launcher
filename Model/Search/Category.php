@@ -2,43 +2,48 @@
 
 namespace JS\Launcher\Model\Search;
 
-class Category extends \Magento\Framework\DataObject
+use Magento\Backend\Helper\Data;
+use Magento\Catalog\Api\CategoryListInterface;
+use Magento\Framework\Api\FilterBuilder;
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\DataObject;
+
+class Category extends DataObject
 {
+    private const CATALOG_CATEGORY_EDIT_URL = 'catalog/category/edit';
     /**
-     * Adminhtml data
-     *
-     * @var \Magento\Backend\Helper\Data
+     * @var Data
      */
     protected $_adminhtmlData = null;
 
     /**
-     * @var \Magento\Cms\Api\CategoryListInterface
+     * @var CategoryListInterface
      */
     protected $categoryRepository;
 
     /**
-     * @var \Magento\Framework\Api\SearchCriteriaBuilder
+     * @var SearchCriteriaBuilder
      */
     protected $searchCriteriaBuilder;
 
     /**
-     * @var \Magento\Framework\Api\FilterBuilder
+     * @var FilterBuilder
      */
     protected $filterBuilder;
 
     /**
      * Initialize dependencies.
      *
-     * @param \Magento\Backend\Helper\Data $adminhtmlData
-     * @param \Magento\Catalog\Api\CategoryListInterface $categoryRepository
-     * @param \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder
-     * @param \Magento\Framework\Api\FilterBuilder $filterBuilder
+     * @param Data $adminhtmlData
+     * @param CategoryListInterface $categoryRepository
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param FilterBuilder $filterBuilder
      */
     public function __construct(
-        \Magento\Backend\Helper\Data $adminhtmlData,
-        \Magento\Catalog\Api\CategoryListInterface $categoryRepository,
-        \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
-        \Magento\Framework\Api\FilterBuilder $filterBuilder
+        Data $adminhtmlData,
+        CategoryListInterface $categoryRepository,
+        SearchCriteriaBuilder $searchCriteriaBuilder,
+        FilterBuilder $filterBuilder
     ) {
         $this->_adminhtmlData = $adminhtmlData;
         $this->categoryRepository = $categoryRepository;
@@ -47,7 +52,7 @@ class Category extends \Magento\Framework\DataObject
     }
 
     /**
-     * Load search results
+     * Get matching categories.
      *
      * @return $this
      */
@@ -78,9 +83,9 @@ class Category extends \Magento\Framework\DataObject
             $result[] = [
                 'id' => 'category/1/' . $category->getId(),
                 'type' => __('Category'),
-                'name' => 'Category - ' .$category->getName(),
+                'name' => __('Category') . ' - ' . $category->getName(),
                 'description' => $category->getName(),
-                'url' => $this->_adminhtmlData->getUrl('catalog/category/edit', ['id' => $category->getId()]),
+                'url' => $this->_adminhtmlData->getUrl(self::CATALOG_CATEGORY_EDIT_URL, ['id' => $category->getId()]),
             ];
         }
         $this->setResults($result);

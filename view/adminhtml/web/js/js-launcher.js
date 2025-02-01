@@ -34,12 +34,10 @@ define([
         _create: function(){
             var self = this;
             var keyQueueCombinations = [null, null];
-            a = self.renderMenu(self.options.menuJson, [], 1);
+            self.renderMenu(self.options.menuJson, [], 1);
             $('body').on("keydown", function (e) {
-                if(e.which == 40 || e.which == 38)
-                {
-                    return;
-                }
+                if(e.which == 40 || e.which == 38) return;
+
                 keyQueueCombinations.push(e.which);
                 keyQueueCombinations.shift();
                 if(keyQueueCombinations.join('_') == self.options.keyCodes) {

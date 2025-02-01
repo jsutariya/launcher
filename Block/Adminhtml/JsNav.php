@@ -2,15 +2,28 @@
 
 namespace JS\Launcher\Block\Adminhtml;
 
-use Magento\Backend\Block\Menu;
+use Exception;
 use Magento\Backend\Block\AnchorRenderer;
+use Magento\Backend\Block\Menu;
+use Magento\Backend\Block\Template;
+use Magento\Backend\Block\Template\Context;
 use Magento\Backend\Model\Menu\Config as MenuConfig;
-use Magento\Framework\App\Action\Context;
+use Magento\Backend\Model\Menu\Filter\Iterator;
+use Magento\Backend\Model\Menu\Filter\IteratorFactory;
+use Magento\Backend\Model\Menu\Item;
+use Magento\Backend\Model\UrlInterface;
+use Magento\Config\Block\System\Config\Tabs;
+use Magento\Config\Model\Config\Structure;
+use Magento\Framework\App\ObjectManager;
+use Magento\Framework\App\Route\ConfigInterface;
 use Magento\Framework\Escaper;
 use Magento\Framework\Serialize\Serializer\Json;
 
-class JsNav extends \Magento\Backend\Block\Template
+class JsNav extends Template
 {
+    private const JS_LAUNCHER_OPTIONS_SHORTCUT_CODE_FIRST = 'js_launcher/options/shortcut_code_first';
+    private const JS_LAUNCHER_OPTIONS_SHORTCUT_CODE_SECOND = 'js_launcher/options/shortcut_code_second';
+    private const ADMINHTML_SYSTEM_CONFIG_EDIT_SECTION_PATH = "adminhtml/system_config/edit/section/";
     /**
      * @var Builder
      */
@@ -24,7 +37,7 @@ class JsNav extends \Magento\Backend\Block\Template
      */
     private $menuConfig;
     /**
-     * @var \Magento\Backend\Model\UrlInterface
+     * @var UrlInterface
      */
     private $url;
     /**
@@ -32,7 +45,7 @@ class JsNav extends \Magento\Backend\Block\Template
      */
     private $escaper;
     /**
-     * @var \Magento\Backend\Model\Menu\Filter\IteratorFactory
+     * @var IteratorFactory
      */
     private $iteratorFactory;
     /**
@@ -40,43 +53,44 @@ class JsNav extends \Magento\Backend\Block\Template
      */
     private $jsonSerializer;
     /**
-     * @var Context
-     */
-    private $context;
-    /**
-     * @var \Magento\Config\Block\System\Config\Tabs
+     * @var Tabs
      */
     private $configTabs;
 
     /**
-     * ActionLayoutRenderBefore constructor.
+     * JsNav constructor.
+     * @param Context $context
      * @param Menu $menuBuilder
      * @param AnchorRenderer $anchorRenderer
      * @param MenuConfig $menuConfig
-     * @param \Magento\Backend\Model\UrlInterface $url
+     * @param UrlInterface $url
      * @param Escaper $escaper
-     * @param \Magento\Backend\Model\Menu\Filter\IteratorFactory $iteratorFactory
-     * @param \Magento\Framework\App\Route\ConfigInterface|null $routeConfig
+     * @param IteratorFactory $iteratorFactory
+     * @param Json $jsonSerializer
+     * @param Structure $configTabs
+     * @param ConfigInterface|null $routeConfig
+     * @param array $data
      */
     public function __construct(
-        \Magento\Backend\Block\Template\Context $context,
+        Context $context,
         Menu $menuBuilder,
         AnchorRenderer $anchorRenderer,
         MenuConfig $menuConfig,
-        \Magento\Backend\Model\UrlInterface $url,
+        UrlInterface $url,
         Escaper $escaper,
-        \Magento\Backend\Model\Menu\Filter\IteratorFactory $iteratorFactory,
-        \Magento\Framework\Serialize\Serializer\Json $jsonSerializer,
-        \Magento\Config\Model\Config\Structure $configTabs,
-        \Magento\Framework\App\Route\ConfigInterface $routeConfig = null, array $data = []
+        IteratorFactory $iteratorFactory,
+        Json $jsonSerializer,
+        Structure $configTabs,
+        ConfigInterface $routeConfig = null,
+        array $data = []
     ) {
         parent::__construct($context, $data);
         $this->menuBuilder = $menuBuilder;
         $this->anchorRenderer = $anchorRenderer;
         $this->menuConfig = $menuConfig;
         $this->routeConfig = $routeConfig ?:
-            \Magento\Framework\App\ObjectManager::getInstance()
-                ->get(\Magento\Framework\App\Route\ConfigInterface::class);
+            ObjectManager::getInstance()
+                ->get(ConfigInterface::class);
         $this->url = $url;
         $this->escaper = $escaper;
         $this->iteratorFactory = $iteratorFactory;
@@ -85,45 +99,35 @@ class JsNav extends \Magento\Backend\Block\Template
     }
 
     /**
-     * Execute observer
+     * Get all menu options and Configuration tab, group and field data and return in a json format
      *
-     * @param \Magento\Framework\Event\Observer $observer
-     * @return void
+     * @return bool|false|string
+     * @throws Exception
      */
     public function getJson()
     {
         $menuItems = $this->renderMenu($this->menuConfig->getMenu(), 0);
         $configItems = $this->renderConfig();
         $allItems = array_merge($menuItems, $configItems);
-        $menuItemsJson = $this->jsonSerializer->serialize($allItems);
-        return $menuItemsJson;
+        return $this->jsonSerializer->serialize($allItems);
     }
 
     /**
-     * Replace Callback Secret Key
+     * Get all available menu nodes.
      *
-     * @param string[] $match
-     * @return string
+     * @param \Magento\Backend\Model\Menu $menu
+     * @param int $level
+     * @return array
      */
-    protected function _callbackSecretKey($match)
-    {
-        $routeId = $this->routeConfig->getRouteByFrontName($match[1]);
-        return \Magento\Backend\Model\UrlInterface::SECRET_KEY_PARAM_NAME . '/' . $this->url->getSecretKey(
-                $routeId ?: $match[1],
-                $match[2],
-                $match[3]
-            );
-    }
-
     public function renderMenu($menu, $level = 0)
     {
         $parentArray = [];
-        /** @var $menuItem \Magento\Backend\Model\Menu\Item */
+        /** @var $menuItem Item */
         foreach ($this->_getMenuIterator($menu) as $menuItem) {
             $menuArray = [];
             $menuArray['label'] = $this->escaper->escapeHtml(__($menuItem->getTitle()));
             $menuArray['url'] = preg_replace_callback(
-                '#' . \Magento\Backend\Model\UrlInterface::SECRET_KEY_PARAM_NAME . '/\$([^\/].*)/([^\/].*)/([^\$].*)\$#U',
+                '#' . UrlInterface::SECRET_KEY_PARAM_NAME . '/\$([^\/].*)/([^\/].*)/([^\$].*)\$#U',
                 [$this, '_callbackSecretKey'],
                 $menuItem->getUrl()
             );
@@ -135,46 +139,79 @@ class JsNav extends \Magento\Backend\Block\Template
         return $parentArray;
     }
 
+    /**
+     * Get menu iterator.
+     *
+     * @param \Magento\Backend\Model\Menu $menu
+     * @return Iterator
+     */
+    protected function _getMenuIterator($menu)
+    {
+        return $this->iteratorFactory->create(['iterator' => $menu->getIterator()]);
+    }
+
+    /**
+     * Get all configuration nodes.
+     *
+     * @return array
+     */
     public function renderConfig()
     {
         $parentArray = [];
         foreach ($this->configTabs->getTabs() as $tab) {
             $menuArray = [];
             $sections = $tab->getChildren();
-            foreach($sections as $section)
-            {
-                $menuArray['label'] = 'System Configuration - ' . $section->getLabel();
+            foreach ($sections as $section) {
+                $menuArray['label'] = __('System Configuration') . ' - ' . $section->getLabel();
                 $code = $section->getId();
-                $menuArray['url'] = $this->url->getUrl("adminhtml/system_config/edit/section/$code");
+                $menuArray['url'] = $this->url->getUrl(self::ADMINHTML_SYSTEM_CONFIG_EDIT_SECTION_PATH . $code);
                 $parentArray[$section->getId()] = $menuArray;
             }
         }
         return $parentArray;
     }
 
-    protected function _getMenuIterator($menu)
-    {
-        return $this->iteratorFactory->create(['iterator' => $menu->getIterator()]);
-    }
-
+    /**
+     * Get key code combination to initiate launcher.
+     *
+     * @return string
+     */
     public function getCombinedCodes()
     {
-        $first = $this->_scopeConfig->getValue('js_launcher/options/shortcut_code_first');
-        $second  = $this->_scopeConfig->getValue('js_launcher/options/shortcut_code_second');
+        $first = $this->_scopeConfig->getValue(self::JS_LAUNCHER_OPTIONS_SHORTCUT_CODE_FIRST);
+        $second = $this->_scopeConfig->getValue(self::JS_LAUNCHER_OPTIONS_SHORTCUT_CODE_SECOND);
 
         $code = '17_77';        //default to ctrl-m
-        if(is_numeric($first) && is_numeric($second))
-        {
+        if (is_numeric($first) && is_numeric($second)) {
             $code = $first . '_' . $second;
         }
 
         return $code;
     }
 
+    /**
+     * Get global search URL path.
+     *
+     * @return string
+     */
     public function getSearchUrl()
     {
         return $this->url->getUrl("adminhtml/index/globalSearch");
     }
+
+    /**
+     * Replace Callback Secret Key
+     *
+     * @param string[] $match
+     * @return string
+     */
+    protected function _callbackSecretKey($match)
+    {
+        $routeId = $this->routeConfig->getRouteByFrontName($match[1]);
+        return UrlInterface::SECRET_KEY_PARAM_NAME . '/' . $this->url->getSecretKey(
+            $routeId ?: $match[1],
+            $match[2],
+            $match[3]
+        );
+    }
 }
-
-

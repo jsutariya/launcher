@@ -1,5 +1,5 @@
 <div id="js_launcher">
-    <input placeholder="Type in where you want to go" type="search" id="search_box" name="search_box" />
+    <input placeholder="<?= __("Type in where you want to go") ?>" type="search" id="search_box" name="search_box" />
     <div id="search_results"></div>
 </div>
 <script type="text/x-magento-init">
@@ -8,9 +8,9 @@
         "js-launcher": {
             "searchbox":"#search_box",
             "searchResultsBox":"#search_results",
-            "menuJson":<?php echo $block->getJson(); ?>,
-            "keyCodes":"<?php echo $block->getCombinedCodes(); ?>",
-            "searchUrl":"<?php echo $block->getSearchUrl(); ?>",
+            "menuJson":<?= $block->getJson(); ?>,
+            "keyCodes":"<?= $block->getCombinedCodes(); ?>",
+            "searchUrl":"<?= $block->getSearchUrl(); ?>",
             "launcherPopup":"#js_launcher"
         }
     }
